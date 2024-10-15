@@ -1,11 +1,11 @@
-name: Run unit tests
+name: ci-test
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-    
+
 
 jobs:
 
