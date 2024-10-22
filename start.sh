@@ -4,6 +4,7 @@ set -e
 echo "run db migration"
 
 source /app/app.env
+cat /app/app.env
 
 echo "DB_SOURCE: $DB_SOURCE"
 
