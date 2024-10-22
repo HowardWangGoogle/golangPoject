@@ -15,10 +15,10 @@ COPY --from=builder /app/migrate.linux-amd64 ./migrate
 COPY .env.docker .
 COPY start.sh .
 COPY wait-for.sh .
-COPY db/migration ./migration
+COPY db/migration .db/migration
 
 
 
 EXPOSE 8080
-ENTRYPOINT [ "/app/start.sh" ]
 CMD [ "/app/main" ]
+ENTRYPOINT [ "/app/start.sh" ]
