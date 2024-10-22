@@ -12,7 +12,7 @@ FROM alpine:3.20
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate.linux-amd64 ./migrate
-COPY app.env .
+COPY .env.docker .
 COPY start.sh .
 COPY wait-for.sh .
 COPY db/migration ./migration
