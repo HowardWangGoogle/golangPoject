@@ -5,6 +5,7 @@ COPY . .
 
 RUN go build -o main main.go
 RUN apk add --no-cache curl
+RUN apk add --no-cache jq
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
 
 
