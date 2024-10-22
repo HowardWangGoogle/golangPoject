@@ -15,7 +15,7 @@ COPY --from=builder /app/migrate.linux-amd64 ./migrate
 COPY .env.docker .
 COPY start.sh .
 COPY wait-for.sh .
-COPY db/migration .db/migration
+COPY db/migration ./migration
 
 
 
