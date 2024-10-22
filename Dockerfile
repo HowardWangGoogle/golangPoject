@@ -1,5 +1,6 @@
 #Build stage
 FROM golang:1.23.2-alpine3.20 AS builder
+RUN apk add --no-cache jq
 WORKDIR /app
 COPY . .
 
