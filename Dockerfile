@@ -1,6 +1,5 @@
 #Build stage
 FROM golang:1.23.2-alpine3.20 AS builder
-RUN apk add --no-cache jq
 WORKDIR /app
 COPY . .
 
@@ -10,6 +9,7 @@ RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/
 
 
 FROM alpine:3.20
+RUN apk add --no-cache jq
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate.linux-amd64 ./migrate
