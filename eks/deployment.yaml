@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: simple-bank-api
-        image: 575108937374.dkr.ecr.ap-southeast-2.amazonaws.com/simplebank:17a08fb18c6c649b60275756719d5b95e1eaaa68
+        image: 575108937374.dkr.ecr.ap-southeast-2.amazonaws.com/simplebank:e448c78eddb576c8f8b6b085b648aa98d5a7de25
         ports:
         - containerPort: 8080
