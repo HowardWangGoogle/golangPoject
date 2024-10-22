@@ -9,7 +9,7 @@ if [ ! -f /app/app.env ]; then
     exit 1
 fi
 
-echo /app/app.env
+cat /app/app.env
 
 
 # 打印 DB_SOURCE 以调试
