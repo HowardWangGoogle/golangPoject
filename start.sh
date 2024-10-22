@@ -13,3 +13,6 @@ echo "DB_SOURCE: $DB_SOURCE"
 
 echo "start the app"
 exec "$@"
+
+
+
