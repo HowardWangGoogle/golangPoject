@@ -2,7 +2,7 @@
 set -e
 
 echo "run db migration"
-source ./app.env
+source /app/app.env
 
 
 # 打印 DB_SOURCE 以调试
