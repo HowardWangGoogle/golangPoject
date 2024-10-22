@@ -16,8 +16,8 @@ type Config struct {
 
 func LoadConfig(path string) (config Config, err error) {
 	viper.AddConfigPath(path)
-	viper.SetConfigName("app")
-	viper.SetConfigType("env")
+	viper.SetConfigName(".env.docker") // 设置配置文件名为 .env.docker
+	viper.SetConfigType("env")         // 配置文件类型为 .env
 
 	viper.AutomaticEnv()
 
