@@ -20,6 +20,7 @@ type Server struct {
 
 func NewServer(config util.Config, store dbsq.Store) (*Server, error) {
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmeticricKEy)
+	// tokenMaker, err := token.NewJWTMaker(config.TokenSymmeticricKEy)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
 	}
@@ -52,6 +53,7 @@ func (server *Server) setupRouter() {
 
 	router.POST("/users/login", server.loginUser)
 	router.POST("/users", server.createUser)
+	router.POST("/tokens/renew_access", server.renewAccessToken)
 
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
