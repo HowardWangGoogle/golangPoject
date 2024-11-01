@@ -3,7 +3,6 @@ package gapi
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/techschool/simplebank/dbsq"
 	"github.com/techschool/simplebank/pb"
@@ -19,7 +18,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 
 	violations := validateLoginUserRequest(req)
 	if violations != nil {
-		log.Fatal("req is ", violations)
+		// log.Fatal("req is ", violations)
 		return nil, invalidArgumentError(violations)
 	}
 
