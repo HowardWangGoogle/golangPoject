@@ -7,7 +7,6 @@ package dbsq
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createEntries = `-- name: CreateEntries :one
@@ -20,12 +19,12 @@ INSERT INTO entries(
 `
 
 type CreateEntriesParams struct {
-	AccountID sql.NullInt64 `json:"account_id"`
-	Amount    int64         `json:"amount"`
+	AccountID int64 `json:"account_id"`
+	Amount    int64 `json:"amount"`
 }
 
 func (q *Queries) CreateEntries(ctx context.Context, arg CreateEntriesParams) (*Entry, error) {
-	row := q.db.QueryRowContext(ctx, createEntries, arg.AccountID, arg.Amount)
+	row := q.db.QueryRow(ctx, createEntries, arg.AccountID, arg.Amount)
 	var i Entry
 	err := row.Scan(
 		&i.ID,
@@ -42,7 +41,7 @@ WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetEntries(ctx context.Context, id int64) (*Entry, error) {
-	row := q.db.QueryRowContext(ctx, getEntries, id)
+	row := q.db.QueryRow(ctx, getEntries, id)
 	var i Entry
 	err := row.Scan(
 		&i.ID,
@@ -63,13 +62,13 @@ OFFSET $3
 `
 
 type ListenEntriesParams struct {
-	AccountID sql.NullInt64 `json:"account_id"`
-	Limit     int32         `json:"limit"`
-	Offset    int32         `json:"offset"`
+	AccountID int64 `json:"account_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
 }
 
 func (q *Queries) ListenEntries(ctx context.Context, arg ListenEntriesParams) ([]*Entry, error) {
-	rows, err := q.db.QueryContext(ctx, listenEntries, arg.AccountID, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listenEntries, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -86,9 +85,6 @@ func (q *Queries) ListenEntries(ctx context.Context, arg ListenEntriesParams) ([
 			return nil, err
 		}
 		items = append(items, &i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

@@ -21,8 +21,11 @@ migratedown:
 migratedown1:
 	migrate -path db/migration -database "${DB_URL}" -verbose down 1
 
+new_migration:
+	migrate create -ext sql -dir db/migration -seq $(name)
+
 test:
-	go test -v -cover ./...
+	go test -v -cover -short ./...
 
 sqlc:
 	sqlc generate
@@ -38,5 +41,23 @@ db_schema:
 
 mock:
 	mockgen -package mockdb  -destination db/mock/store.go github.com/techschool/simplebank/dbsq Store
+	mockgen -package mockwk  -destination worker/mock/distributor.go github.com/techschool/simplebank/worker TaskDistributor
+
+
+proto:
+	rm -f pb/*.go
+	rm -f doc/swagger/*.swagger.json
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+		--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+		--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+		--openapiv2_out=doc/swagger --openapiv2_opt=allow_merge=true,merge_file_name=simple_bank \
+		proto/*.proto
+		statik -src=./doc/swagger -dest=./doc
+
+evans:
+	evans --host localhost --port 9090 -r repl --package pb
+
+redis:
+	docker run --name redis -p 6379:6379 -d redis:7.4.1-alpine
 	
-.PHONY: postgres createdb dropdb migrateup  migratedown sqlc test server db_docs db_schema migrateup1 migratedown1
+.PHONY: postgres createdb dropdb migrateup  migratedown sqlc test server db_docs db_schema migrateup1 migratedown1 proto redis new_migration

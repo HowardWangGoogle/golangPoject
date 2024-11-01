@@ -1,7 +1,6 @@
 package api
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -43,9 +42,9 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	}
 
 	arg := dbsq.TransferTxParams{
-		FromAccountID: sql.NullInt64{Int64: req.FromAccountID, Valid: true},
-		ToAccountID:   sql.NullInt64{Int64: req.ToAccountID, Valid: true},
-		Amount:        sql.NullInt64{Int64: req.Amount, Valid: true},
+		FromAccountID: req.FromAccountID,
+		ToAccountID:   req.ToAccountID,
+		Amount:        req.Amount,
 	}
 
 	result, err := server.store.TransferTx(ctx, arg)

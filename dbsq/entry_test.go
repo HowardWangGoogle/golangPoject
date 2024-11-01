@@ -2,7 +2,6 @@ package dbsq
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
@@ -12,11 +11,11 @@ import (
 
 func createRandomEntry(t *testing.T, account Account) *Entry {
 	arg := CreateEntriesParams{
-		AccountID: sql.NullInt64{Int64: account.ID, Valid: true},
+		AccountID: account.ID,
 		Amount:    util.RandomMoney(),
 	}
 
-	entry, err := testQueries.CreateEntries(context.Background(), arg)
+	entry, err := testStore.CreateEntries(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry)
 
@@ -37,7 +36,7 @@ func TestCreateEntry(t *testing.T) {
 func TestGetEntry(t *testing.T) {
 	account := createRandomAccount(t)
 	entry1 := createRandomEntry(t, account)
-	entry2, err := testQueries.GetEntries(context.Background(), entry1.ID)
+	entry2, err := testStore.GetEntries(context.Background(), entry1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry2)
 
@@ -54,12 +53,12 @@ func TestListEntries(t *testing.T) {
 	}
 
 	arg := ListenEntriesParams{
-		AccountID: sql.NullInt64{Int64: account.ID, Valid: true},
+		AccountID: account.ID,
 		Limit:     5,
 		Offset:    5,
 	}
 
-	entries, err := testQueries.ListenEntries(context.Background(), arg)
+	entries, err := testStore.ListenEntries(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, entries, 5)
 
