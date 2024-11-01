@@ -2,7 +2,6 @@ package dbsq
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
@@ -12,12 +11,12 @@ import (
 
 func createRandomTransfer(t *testing.T, account1, account2 Account) *Transfer {
 	arg := CreateTransferParams{
-		FromAccountID: sql.NullInt64{Int64: account1.ID, Valid: true},        // 将 int64 转换为 sql.NullInt64
-		ToAccountID:   sql.NullInt64{Int64: account2.ID, Valid: true},        // 同样处理
-		Amount:        sql.NullInt64{Int64: util.RandomMoney(), Valid: true}, // 假设这是有效金额
+		FromAccountID: account1.ID,        // 将 int64 转换为 sql.NullInt64
+		ToAccountID:   account2.ID,        // 同样处理
+		Amount:        util.RandomMoney(), // 假设这是有效金额
 	}
 
-	transfer, err := testQueries.CreateTransfer(context.Background(), arg)
+	transfer, err := testStore.CreateTransfer(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer)
 
@@ -42,7 +41,7 @@ func TestGetTransfer(t *testing.T) {
 	account2 := createRandomAccount(t)
 	transfer1 := createRandomTransfer(t, account1, account2)
 
-	transfer2, err := testQueries.GetTransfer(context.Background(), transfer1.ID)
+	transfer2, err := testStore.GetTransfer(context.Background(), transfer1.ID)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer2)
@@ -64,18 +63,18 @@ func TestListTransfer(t *testing.T) {
 	}
 
 	arg := ListTransfersParams{
-		FromAccountID: sql.NullInt64{Int64: account1.ID, Valid: true}, // 将 int64 转换为 sql.NullInt64
-		ToAccountID:   sql.NullInt64{Int64: account2.ID, Valid: true}, // 同样处理
+		FromAccountID: account1.ID, // 将 int64 转换为 sql.NullInt64
+		ToAccountID:   account2.ID, // 同样处理
 		Limit:         5,
 		Offset:        5,
 	}
 
-	transfers, err := testQueries.ListTransfers(context.Background(), arg)
+	transfers, err := testStore.ListTransfers(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, transfers, 5)
 
 	for _, transfer := range transfers {
 		require.NotEmpty(t, transfer)
-		require.True(t, transfer.FromAccountID == sql.NullInt64{Int64: account1.ID, Valid: true} || transfer.ToAccountID == sql.NullInt64{Int64: account2.ID, Valid: true})
+		require.True(t, transfer.FromAccountID == account1.ID || transfer.ToAccountID == account2.ID)
 	}
 }

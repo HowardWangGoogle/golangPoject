@@ -1,6 +1,4 @@
 version: "2"
-cloud:
-  project: "<PROJECT_ID>"
 sql:
   - engine: "postgresql"
     # 包含数据库迁移文件的目录[迁移文件存放目录]
@@ -12,11 +10,11 @@ sql:
         #生成文件目录
         package: "dbsq"
         out: "dbsq"
+        sql_package: "pgx/v5"
         emit_prepared_queries: false
         emit_empty_slices: true
         emit_exported_queries: false
         emit_methods_with_db_argument: false
-        emit_pointers_for_null_types: true
         emit_enum_valid_method: false
         emit_all_enum_values: false
         emit_interface: true
@@ -30,3 +28,13 @@ sql:
         json_tags_id_uppercase: true
         # camelCase使用camel，pascal使用PascalCase，snake使用snake_case或none使用DB中的列名。默认为无。
         json_tags_case_style: "snake"
+        overrides:
+          - db_type: "timestamp"
+            go_type: "time.Time"
+          - db_type: "timestamptz"
+            go_type: "time.Time"
+          - db_type: "uuid"
+            go_type: "github.com/google/uuid.UUID"
+        
+
+

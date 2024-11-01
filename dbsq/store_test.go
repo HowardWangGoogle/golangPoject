@@ -2,7 +2,6 @@ package dbsq
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"testing"
 
@@ -10,11 +9,9 @@ import (
 )
 
 func TestTransferTxDeadlock(t *testing.T) {
-	store := NewStore(testDB)
 
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
-	fmt.Println(">> before:", account1.Balance, account2.Balance)
 
 	n := 10
 	amount := int64(10)
@@ -33,10 +30,10 @@ func TestTransferTxDeadlock(t *testing.T) {
 		go func() {
 			ctx := context.Background()
 
-			_, err := store.TransferTx(ctx, TransferTxParams{
-				FromAccountID: sql.NullInt64{Int64: fromAccountID, Valid: true},
-				ToAccountID:   sql.NullInt64{Int64: toAccountID, Valid: true},
-				Amount:        sql.NullInt64{Int64: amount, Valid: true},
+			_, err := testStore.TransferTx(ctx, TransferTxParams{
+				FromAccountID: fromAccountID,
+				ToAccountID:   toAccountID,
+				Amount:        amount,
 			})
 
 			errs <- err
@@ -49,10 +46,10 @@ func TestTransferTxDeadlock(t *testing.T) {
 
 	}
 
-	updatedAccount1, err := testQueries.GetAccountForUpdate(context.Background(), account1.ID)
+	updatedAccount1, err := testStore.GetAccountForUpdate(context.Background(), account1.ID)
 	require.NoError(t, err)
 
-	updatedAccount2, err := testQueries.GetAccountForUpdate(context.Background(), account2.ID)
+	updatedAccount2, err := testStore.GetAccountForUpdate(context.Background(), account2.ID)
 	require.NoError(t, err)
 
 	fmt.Print(">> after:", updatedAccount1.Balance, updatedAccount2.Balance)

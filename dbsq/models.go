@@ -5,7 +5,6 @@
 package dbsq
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -20,10 +19,11 @@ type Account struct {
 }
 
 type Entry struct {
-	ID        int64         `json:"id"`
-	AccountID sql.NullInt64 `json:"account_id"`
-	Amount    int64         `json:"amount"`
-	CreatedAt time.Time     `json:"created_at"`
+	ID        int64 `json:"id"`
+	AccountID int64 `json:"account_id"`
+	// can be negative or positive
+	Amount    int64     `json:"amount"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Session struct {
@@ -38,11 +38,12 @@ type Session struct {
 }
 
 type Transfer struct {
-	ID            int64         `json:"id"`
-	FromAccountID sql.NullInt64 `json:"from_account_id"`
-	ToAccountID   sql.NullInt64 `json:"to_account_id"`
-	Amount        sql.NullInt64 `json:"amount"`
-	CreatedAt     time.Time     `json:"created_at"`
+	ID            int64 `json:"id"`
+	FromAccountID int64 `json:"from_account_id"`
+	ToAccountID   int64 `json:"to_account_id"`
+	// must be positive
+	Amount    int64     `json:"amount"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type User struct {
@@ -52,4 +53,16 @@ type User struct {
 	Email             string    `json:"email"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	CreatedAt         time.Time `json:"created_at"`
+	IsEmailVerified   bool      `json:"is_email_verified"`
+	Role              string    `json:"role"`
+}
+
+type VerifyEmail struct {
+	ID         int64     `json:"id"`
+	Username   string    `json:"username"`
+	Email      string    `json:"email"`
+	SecretCode string    `json:"secret_code"`
+	IsUsed     bool      `json:"is_used"`
+	CreatedAt  time.Time `json:"created_at"`
+	ExpiredAt  time.Time `json:"expired_at"`
 }
